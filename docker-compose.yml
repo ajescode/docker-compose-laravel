@@ -3,7 +3,6 @@ version: '3'
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx
     ports:
       - "8080:80"
     volumes:
@@ -15,11 +14,11 @@ services:
     networks:
       - laravel
     environment:
-      XDEBUG_CONFIG: remote_host={{YOUR_IP_ADDRESS}}
+      XDEBUG_CONFIG: remote_host={{IP}}
+      PHP_IDE_CONFIG: serverName=Docker
 
   mysql:
     image: mysql:8.0.19
-    container_name: mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -38,17 +37,15 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: php
     volumes:
       - ./src:/var/www/html
     ports:
-      - "9000:9000"
+      - "9001:9001"
     networks:
       - laravel
 
   composer:
     image: composer:latest
-    container_name: composer
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
@@ -59,7 +56,6 @@ services:
 
   npm:
     image: node:13.12
-    container_name: npm
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
@@ -69,7 +65,6 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile-artisan
-    container_name: artisan
     volumes:
       - ./src:/var/www/html
     depends_on:
